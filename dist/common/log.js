@@ -19,8 +19,16 @@ export function logJson(obj, indent = '') {
         if (obj.hasOwnProperty(key)) {
             var value = obj[key];
     
-            if (isNestedKeyValuePair(value)) {
+            if (Array.isArray(value)) {
+                log(`${indent}${key}: [`);
+                for (let i = 0; i < value.length; i++) {
+                    logJson(value[i], `${indent}  `);
+                }
+                log(`${indent}]`);
+            } else if (isNestedKeyValuePair(value)) {
+                log(`${indent}${key}: {`);
                 logJson(value, `${indent}  `);
+                log(`${indent}}`);
             } else {
                 log(`${indent}${key}: ${value}`);
             }
