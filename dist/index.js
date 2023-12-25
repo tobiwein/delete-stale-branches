@@ -1,8 +1,7 @@
 import core from '@actions/core';
 import github from '@actions/github';
 import { Octokit } from 'octokit';
-import { logJson } from './common/log';
-import { log, debug, logJson, debugJson } from 'common/log.js';
+import { log, debug, logJson, debugJson } from './common/log.js';
 
 async function run() {
     const token = core.getInput("token");
