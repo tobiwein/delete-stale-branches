@@ -1,0 +1,19 @@
+name: 'Delete stale branches'
+description: 'Retrieves a list of all branches from a repository and deletes every one exceeding a spcified age.'
+author: '@tobiwein'
+
+inputs:
+  token:
+    description: 'GitHub Token'
+    required: true
+  githubApi:
+    description: 'GitHub Api to use'
+    required: false
+    default: ''
+  repository:
+    description: 'Owner and name of the repository to use this action on. {OWNER}/{REPO}'
+    required: true
+
+runs:
+  using: node20
+  main: dist/index.js
