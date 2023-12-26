@@ -39,6 +39,7 @@ async function getListOfBranches(octokit, url) {
     });
 
     logJson(response);
+    return response;
 }
 
 run();
