@@ -19,7 +19,15 @@ async function run() {
 
     const branchListUrl = `/repos/${repo}/branches`;
     const listOfBranches = await getListOfBranches(octokit, branchListUrl);
+    const listOfBranchNames = extractBranchNames(listOfBranches.data);
+}
 
+function extractBranchNames(listOfBranches) {
+    const listOfBranchNames = new Array();
+    for (var i = 0; i < listOfBranches.length; i++) {
+        log(`Element ${i}: ${listOfBranches[i].name}`);
+        listOfBranchNames.push(listOfBranches[i].name);
+    }
 }
 
 async function getListOfBranches(octokit, url) {
