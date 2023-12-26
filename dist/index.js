@@ -20,6 +20,24 @@ async function run() {
     const branchListUrl = `/repos/${repo}/branches`;
     const listOfBranches = await getListOfBranches(octokit, branchListUrl);
     const listOfBranchNames = extractBranchNames(listOfBranches.data);
+    const completeListOfBranches = await getBranches(octokit, branchListUrl, listOfBranchNames);
+}
+
+async function getBranches(octokit, url, listOfBranchNames) {
+    const completeListOfBranches = new Array();
+    for (var i = 0; i < listOfBranchNames.length; i++) {
+        const response = await octokit.request('GET {url}/{branch}', {
+            url: url,
+            branch: listOfBranchNames[i],
+            headers: {
+                'X-GitHub-Api-Version': '2022-11-28'
+            }
+        });
+        completeListOfBranches.push(response);
+        log(`Branch ${listOfBranchNames[i]}`);
+        logJson(response);
+    }
+    return completeListOfBranches;
 }
 
 function extractBranchNames(listOfBranches) {
@@ -28,6 +46,7 @@ function extractBranchNames(listOfBranches) {
         log(`Element ${i}: ${listOfBranches[i].name}`);
         listOfBranchNames.push(listOfBranches[i].name);
     }
+    return listOfBranchNames;
 }
 
 async function getListOfBranches(octokit, url) {
