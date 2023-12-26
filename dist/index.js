@@ -36,7 +36,7 @@ async function getCommits(octokit, url, listOfHeadCommits) {
             }
         });
         completeListOfHeadCommits.push(response);
-        log(`Commit ${listOfHeadCommits[i]}`);
+        log(`Commit ${listOfHeadCommits[i].data[0]}`);
         logJson(response);
     }
     return completeListOfHeadCommits;
