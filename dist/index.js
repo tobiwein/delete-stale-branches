@@ -19,34 +19,36 @@ async function run() {
 
     const branchListUrl = `/repos/${repo}/branches`;
     const listOfBranches = await getListOfBranches(octokit, branchListUrl);
-    const listOfBranchNames = extractBranchNames(listOfBranches.data);
-    const completeListOfBranches = await getBranches(octokit, branchListUrl, listOfBranchNames);
+    const listOfHeadCommits = extractHeadCommits(listOfBranches.data);
+
+    const commitUrl = `/repos/${repo}/commits`
+    const completeListOfHeadCommits = await getCommits(octokit, commitUrl, listOfHeadCommits);
 }
 
-async function getBranches(octokit, url, listOfBranchNames) {
-    const completeListOfBranches = new Array();
-    for (var i = 0; i < listOfBranchNames.length; i++) {
-        const response = await octokit.request('GET {url}/{branch}', {
+async function getCommits(octokit, url, listOfHeadCommits) {
+    const completeListOfHeadCommits = new Array();
+    for (var i = 0; i < listOfHeadCommits.length; i++) {
+        const response = await octokit.request('GET {url}/{commit}', {
             url: url,
-            branch: listOfBranchNames[i],
+            commit: listOfHeadCommits[i],
             headers: {
                 'X-GitHub-Api-Version': '2022-11-28'
             }
         });
-        completeListOfBranches.push(response);
-        log(`Branch ${listOfBranchNames[i]}`);
+        completeListOfHeadCommits.push(response);
+        log(`Commit ${listOfHeadCommits[i]}`);
         logJson(response);
     }
-    return completeListOfBranches;
+    return completeListOfHeadCommits;
 }
 
-function extractBranchNames(listOfBranches) {
-    const listOfBranchNames = new Array();
+function extractHeadCommits(listOfBranches) {
+    const listOfHradCommits = new Array();
     for (var i = 0; i < listOfBranches.length; i++) {
-        log(`Element ${i}: ${listOfBranches[i].name}`);
-        listOfBranchNames.push(listOfBranches[i].name);
+        log(`Element ${i}: ${listOfBranches[i].commit.sha}`);
+        listOfHeadCommits.push(listOfBranches[i].commit.sha);
     }
-    return listOfBranchNames;
+    return listOfHeadCommits;
 }
 
 async function getListOfBranches(octokit, url) {
