@@ -43,7 +43,7 @@ async function getCommits(octokit, url, listOfHeadCommits) {
 }
 
 function extractHeadCommits(listOfBranches) {
-    const listOfHradCommits = new Array();
+    const listOfHeadCommits = new Array();
     for (var i = 0; i < listOfBranches.length; i++) {
         log(`Element ${i}: ${listOfBranches[i].commit.sha}`);
         listOfHeadCommits.push(listOfBranches[i].commit.sha);
