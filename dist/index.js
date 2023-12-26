@@ -19,36 +19,36 @@ async function run() {
 
     const branchListUrl = `/repos/${repo}/branches`;
     const listOfBranches = await getListOfBranches(octokit, branchListUrl);
-    const listOfHeadCommits = extractHeadCommits(listOfBranches.data);
+    const listOfBranchNames = extractBranchNames(listOfBranches.data);
 
     const commitUrl = `/repos/${repo}/commits`
-    const completeListOfHeadCommits = await getCommits(octokit, commitUrl, listOfHeadCommits);
+    const listOfHeadCommits = await getCommits(octokit, commitUrl, listOfBranchNames);
 }
 
-async function getCommits(octokit, url, listOfHeadCommits) {
+async function getCommits(octokit, url, listOfBranchNames) {
     const completeListOfHeadCommits = new Array();
-    for (var i = 0; i < listOfHeadCommits.length; i++) {
-        const response = await octokit.request('GET {url}/{commit}', {
+    for (var i = 0; i < listOfBranchNames.length; i++) {
+        const response = await octokit.request('GET {url}/heads/{branch}', {
             url: url,
-            commit: listOfHeadCommits[i],
+            branch: listOfBranchNames[i],
             headers: {
                 'X-GitHub-Api-Version': '2022-11-28'
             }
         });
         completeListOfHeadCommits.push(response);
-        log(`Commit ${listOfHeadCommits[i].data[0]}`);
+        log(`Commit ${listOfBranchNames[i]}`);
         logJson(response);
     }
     return completeListOfHeadCommits;
 }
 
-function extractHeadCommits(listOfBranches) {
-    const listOfHeadCommits = new Array();
+function extractBranchNames(listOfBranches) {
+    const listOfBranchNames = new Array();
     for (var i = 0; i < listOfBranches.length; i++) {
-        log(`Element ${i}: ${listOfBranches[i].commit.sha}`);
-        listOfHeadCommits.push(listOfBranches[i].commit.sha);
+        log(`Element ${i}: ${listOfBranches[i].name}`);
+        listOfBranchNames.push(listOfBranches[i].name);
     }
-    return listOfHeadCommits;
+    return listOfBranchNames;
 }
 
 async function getListOfBranches(octokit, url) {
